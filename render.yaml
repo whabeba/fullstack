@@ -1,0 +1,27 @@
+services:
+  # Backend Service (FastAPI)
+  - type: web
+    name: personality-test-backend
+    env: python
+    buildCommand: pip install -r requirements_irt.txt
+    startCommand: python simple_backend.py
+    envVars:
+      - key: PORT
+        value: 8005
+      - key: PYTHONPATH
+        value: .
+
+  # Frontend Service (React)
+  - type: web
+    name: personality-test-frontend
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npx serve -s build -l 3000
+    envVars:
+      - key: REACT_APP_BACKEND_URL
+        fromService:
+          type: web
+          name: personality-test-backend
+          property: host
+        # أو يمكنك تحديد الرابط مباشرة:
+        # value: https://personality-test-backend.onrender.com
